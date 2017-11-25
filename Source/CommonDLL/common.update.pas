@@ -26,7 +26,7 @@ uses
   Data.Cloud.AmazonAPI, System.JSON, Winapi.ShellAPI;
 
 const
-  cAccountKey = 'XHARBl/8zAT5nsctQQaWX2LUz4Lldw9bgxPqQreT';
+  cAccountKey = '';
   cAccountName = 'AKIAJ22WJ3O3ICO6BGTQ';
   cBucketName = 'sugarupdate';
   cAppSugar = 'Sugar for Delphi';
