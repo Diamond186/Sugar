@@ -5,7 +5,20 @@ Supported from Delphi 6 to RAD Studio Totyo.
 
 ## Capabilities
 
+<details>
+  <summary>Dublication line(s)</summary>
+  <p><img src="/gif/DUPLICATE.gif"></p>
+</details>
 
+<details>
+  <summary>Selection block</summary>
+  <p><img src="/gif/SELECT.gif"></p>
+</details>
+
+<details>
+  <summary>History clipboard</summary>
+  <p><img src="/gif/MULTIBUFFER.gif"></p>
+</details>
 
 ## Installing
 
