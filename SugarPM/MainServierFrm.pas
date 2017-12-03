@@ -19,10 +19,6 @@ type
     ImageList: TImageList;
     vstProject: TVirtualStringTree;
     aGroupAdd: TAction;
-    pmProject: TPopupMenu;
-    miProjOpen: TMenuItem;
-    miProjRename: TMenuItem;
-    miProjDelete: TMenuItem;
     ImageList_disable: TImageList;
     aGroupRename: TAction;
     aGroupDeleteWithProject: TAction;
@@ -37,7 +33,6 @@ type
     procedure vstProjectNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
     procedure aProjRunExecute(Sender: TObject);
     procedure ActionManagerUpdate(Action: TBasicAction; var Handled: Boolean);
-    procedure vstProjectGetPopupMenu(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; const P: TPoint; var AskParent: Boolean; var PopupMenu: TPopupMenu);
     // delete project
     procedure aProjDelExecute(Sender: TObject);
     // Create new or rename group
@@ -69,6 +64,7 @@ type
     procedure UpdateLastCompile(const aGuid, aDelphi: string);
     procedure RunProject(const aPath, aDelphi: String);
     procedure RunGroupProject(const aNode: PVirtualNode; const aDelphi: string);
+    procedure RenameProject(const aProjNode: PVirtualNode);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
@@ -158,6 +154,12 @@ begin
 
   if Assigned(LNode) then
   begin
+    if (Sender = aGroupRename) and (LNode.ChildCount = 0) then
+    begin
+      RenameProject(LNode);
+      Exit;
+    end;
+
     if LNode.ChildCount > 0 then
       LArr[0] := FStorage[LNode.FirstChild.GetData<string>].GroupName;
 
@@ -165,7 +167,8 @@ begin
       function(const Values: array of string): Boolean
       begin
         Result := not Values[0].IsEmpty;
-      end) then
+      end)
+    then
     begin
       if LNode.ChildCount > 0 then
       begin
@@ -401,6 +404,29 @@ begin
   Result := TEncoding.UTF8.GetString(_Bytes);
 end;
 
+procedure TMainPMFrm.RenameProject(const aProjNode: PVirtualNode);
+var
+  LArr: TArray<string>;
+begin
+  if Assigned(aProjNode) then
+  begin
+    SetLength(LArr, 1);
+    LArr[0] := FStorage[aProjNode.GetData<string>].Name;
+
+    if InputQuery(EmptyStr, ['Project name'], LArr,
+      function(const Values: array of string): Boolean
+      begin
+        Result := not Values[0].IsEmpty and
+                  not LArr[0].Equals(Values[0]);
+      end)
+    then
+    begin
+      FStorage.RenameProject(aProjNode.GetData<string>, LArr[0]);
+      vstProject.ReinitNode(aProjNode, False);
+    end;
+  end;
+end;
+
 procedure TMainPMFrm.RunGroupProject(const aNode: PVirtualNode; const aDelphi: string);
 const
   cDocPath = 'Sugar Project Manager';
@@ -594,11 +620,6 @@ procedure TMainPMFrm.vstProjectExpanded(Sender: TBaseVirtualTree; Node: PVirtual
 begin
   if Node.ChildCount > 0 then
     FStorage.GroupExpanded(True, Node.FirstChild.Index);
-end;
-
-procedure TMainPMFrm.vstProjectGetPopupMenu(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; const P: TPoint; var AskParent: Boolean; var PopupMenu: TPopupMenu);
-begin
-  PopupMenu := pmProject;
 end;
 
 procedure TMainPMFrm.vstProjectGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);

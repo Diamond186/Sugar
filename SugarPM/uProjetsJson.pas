@@ -46,6 +46,7 @@ type
     function AddProject(const aPath, aDelphi: String): String;
     function Count: Integer;
     function Exists(const aPath: string): string;
+    procedure RenameProject(const aProjID, aNewName: string);
 
     procedure UpdateProject(const aProjID: string; const aDelphi: string);
     procedure Detete(const aIndex: Integer);
@@ -237,6 +238,22 @@ begin
     DeleteKey(ProjID, _GroupName);
     DeleteKey(ProjID, _GroupExpanded);
 
+    UpdateFile;
+  end;
+end;
+
+procedure TProjets.RenameProject(const aProjID, aNewName: string);
+var
+  FProj: TProject;
+begin
+  if not aProjID.IsEmpty
+    and not aNewName.IsEmpty
+  then
+  begin
+    FProj := GetProject(aProjID);
+    FProj.FName := aNewName;
+
+    WriteString(aProjID, _Name, aNewName);
     UpdateFile;
   end;
 end;

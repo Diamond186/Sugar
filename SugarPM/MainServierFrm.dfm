@@ -79,7 +79,6 @@ object MainPMFrm: TMainPMFrm
     OnDragDrop = vstProjectDragDrop
     OnExpanded = vstProjectExpanded
     OnGetText = vstProjectGetText
-    OnGetPopupMenu = vstProjectGetPopupMenu
     OnNodeDblClick = vstProjectNodeDblClick
     Columns = <
       item
@@ -112,6 +111,7 @@ object MainPMFrm: TMainPMFrm
           item
             ChangesAllowed = []
             Action = aProjRun
+            Caption = 'ProjRun'
             ImageIndex = 0
             ShowCaption = False
           end
@@ -120,22 +120,28 @@ object MainPMFrm: TMainPMFrm
           end
           item
             Action = aGroupAdd
+            Caption = 'GroupAdd'
             ImageIndex = 1
             ShowCaption = False
           end
           item
             Action = aGroupRename
+            Caption = 'GroupRename'
             ImageIndex = 3
             ShowCaption = False
           end
           item
             Visible = False
             Action = aAddToGroup
+            Caption = 'AddToGroup'
             ImageIndex = 4
+            ShowCaption = False
           end
           item
             Action = aRemoveFromGroup
+            Caption = 'RemoveFromGroup'
             ImageIndex = 5
+            ShowCaption = False
           end
           item
             Caption = '-'
@@ -182,7 +188,7 @@ object MainPMFrm: TMainPMFrm
     end
     object aGroupRename: TAction
       Category = 'Group'
-      Hint = 'Rename group'
+      Hint = 'Rename project or group'
       ImageIndex = 3
       OnExecute = aGroupAddExecute
     end
@@ -481,20 +487,6 @@ object MainPMFrm: TMainPMFrm
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000}
-  end
-  object pmProject: TPopupMenu
-    Images = ImageList
-    Left = 312
-    Top = 56
-    object miProjOpen: TMenuItem
-      Action = aProjRun
-    end
-    object miProjRename: TMenuItem
-      Action = aGroupAdd
-    end
-    object miProjDelete: TMenuItem
-      Action = aProjDel
-    end
   end
   object ImageList_disable: TImageList
     ColorDepth = cd32Bit
