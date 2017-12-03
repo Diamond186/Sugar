@@ -8,7 +8,7 @@ uses
 type
   TProject = record
     private
-      FGuid: string;
+      FProjID: string;
       FName: string;
       FGroupID: string;
       FGroupExpanded: Boolean;
@@ -17,7 +17,7 @@ type
       FDelphi: String;
       FLastCompile: TDateTime;
     public
-      property Guid: string read FGuid;
+      property ProjID: string read FProjID;
       property Name: string read FName;
       property GroupID: string read FGroupID;
       property GroupExpanded: Boolean read FGroupExpanded;
@@ -40,14 +40,14 @@ type
     const _FormatTime = 'hh:nn:ss';
     const _FormatDateTime = _FormatDate + ' ' + _FormatTime;
 
-    function  GetProject(const aGuid: string): TProject;
+    function  GetProject(const aProjID: string): TProject;
     function GetProjectOfIndex(Index: Integer): TProject;
   public
     function AddProject(const aPath, aDelphi: String): String;
     function Count: Integer;
     function Exists(const aPath: string): string;
 
-    procedure UpdateProject(const aGuid: string; const aDelphi: string);
+    procedure UpdateProject(const aProjID: string; const aDelphi: string);
     procedure Detete(const aIndex: Integer);
     procedure AddProjectToGroup(const aProjGuid: string; aIndex: Integer);
     procedure RemoveProjectFromGroup(const aProgID: string);
@@ -56,7 +56,7 @@ type
     procedure GroupExpanded(const aExpanded: Boolean; const aIndex: Integer);
     procedure GroupDelete(const aProjID: string);
 
-    property Project[const Index: string]: TProject read GetProject; default;
+    property Project[const aProjID: string]: TProject read GetProject; default;
 
     class function LoadFromFile(const aFileName: string): TProjets;
   end;
@@ -116,7 +116,7 @@ end;
 
 procedure TProjets.Detete(const aIndex: Integer);
 begin
-  EraseSection(GetProjectOfIndex(aIndex).FGuid);
+  EraseSection(GetProjectOfIndex(aIndex).FProjID);
   UpdateFile;
 end;
 
@@ -160,7 +160,13 @@ begin
   LList := TStringList.Create;
   try
     ReadSections(LList);
+
+    {$IFDEF DEBUG}
     Assert((Index >= 0) or (LList.Count < Index), 'Not found project');
+    {$ELSE}
+    if (Index < 0) or (LList.Count <= Index) then
+      Exit;
+    {$ENDIF}
 
     Result := GetProject(LList[Index]);
   finally
@@ -168,20 +174,25 @@ begin
   end;
 end;
 
-function TProjets.GetProject(const aGuid: string): TProject;
+function TProjets.GetProject(const aProjID: string): TProject;
 var
   LList: TStringList;
   LStr: string;
   LFormatSetting: TFormatSettings;
 begin
-  Assert(not aGuid.IsEmpty, 'Not found project');
+  {$IFDEF DEBUG}
+  Assert(not aProjID.IsEmpty, 'Not found project');
+  {$ELSE}
+  if aProjID.IsEmpty then
+    Exit;
+  {$ENDIF}
 
   LList := TStringList.Create;
   try
     ReadSections(LList);
 
     for LStr in LList do
-    if LStr.Equals(aGuid) then
+    if LStr.Equals(aProjID) then
     begin
       LFormatSetting := TFormatSettings.Create;
       LFormatSetting.ShortDateFormat := _FormatDate;
@@ -189,14 +200,14 @@ begin
       LFormatSetting.DateSeparator := '-';
       LFormatSetting.TimeSeparator := ':';
 
-      Result.FGuid := aGuid;
-      Result.FName := ReadString(aGuid, _Name, EmptyStr);
-      Result.FGroupName := ReadString(aGuid, _GroupName, EmptyStr);
-      Result.FGroupID := ReadString(aGuid, _GroupID, EmptyStr);
-      Result.FGroupExpanded := ReadBool(aGuid, _GroupExpanded, True);
-      Result.FPath := ReadString(aGuid, _Path, EmptyStr);
-      Result.FDelphi := ReadString(aGuid, _Delphi, EmptyStr);
-      Result.FLastCompile := StrToDateTime(ReadString(aGuid, _LastCompile, EmptyStr), LFormatSetting);
+      Result.FProjID := aProjID;
+      Result.FName := ReadString(aProjID, _Name, EmptyStr);
+      Result.FGroupName := ReadString(aProjID, _GroupName, EmptyStr);
+      Result.FGroupID := ReadString(aProjID, _GroupID, EmptyStr);
+      Result.FGroupExpanded := ReadBool(aProjID, _GroupExpanded, True);
+      Result.FPath := ReadString(aProjID, _Path, EmptyStr);
+      Result.FDelphi := ReadString(aProjID, _Delphi, EmptyStr);
+      Result.FLastCompile := StrToDateTime(ReadString(aProjID, _LastCompile, EmptyStr), LFormatSetting);
 
       Break;
     end;
@@ -222,9 +233,9 @@ procedure TProjets.RemoveProjectFromGroup(const aProgID: string);
 begin
   with GetProject(aProgID) do
   begin
-    DeleteKey(Guid, _GroupID);
-    DeleteKey(Guid, _GroupName);
-    DeleteKey(Guid, _GroupExpanded);
+    DeleteKey(ProjID, _GroupID);
+    DeleteKey(ProjID, _GroupName);
+    DeleteKey(ProjID, _GroupExpanded);
 
     UpdateFile;
   end;
@@ -244,9 +255,9 @@ begin
       for LStr in LList do
       if GetProject(LStr).GroupID = GroupID then
       begin
-        DeleteKey(GetProject(LStr).Guid, _GroupID);
-        DeleteKey(GetProject(LStr).Guid, _GroupName);
-        DeleteKey(GetProject(LStr).Guid, _GroupExpanded);
+        DeleteKey(GetProject(LStr).ProjID, _GroupID);
+        DeleteKey(GetProject(LStr).ProjID, _GroupName);
+        DeleteKey(GetProject(LStr).ProjID, _GroupExpanded);
       end;
     finally
       LList.Free;
@@ -269,7 +280,7 @@ begin
 
       for LStr in LList do
       if GetProject(LStr).GroupID = GroupID then
-        WriteBool(GetProject(LStr).Guid, _GroupExpanded, aExpanded);
+        WriteBool(GetProject(LStr).ProjID, _GroupExpanded, aExpanded);
     finally
       LList.Free;
     end;
@@ -290,8 +301,8 @@ begin
     begin
       CreateGUID(LGuid);
 
-      WriteString(FGuid, _GroupID, GUIDToString(LGuid));
-      WriteString(FGuid, _GroupName, aNewName);
+      WriteString(ProjID, _GroupID, GUIDToString(LGuid));
+      WriteString(ProjID, _GroupName, aNewName);
     end
     else
     begin
@@ -301,7 +312,7 @@ begin
 
         for LStr in LList do
         if GetProject(LStr).GroupID = GroupID then
-          WriteString(GetProject(LStr).Guid, _GroupName, aNewName);
+          WriteString(GetProject(LStr).ProjID, _GroupName, aNewName);
       finally
         LList.Free;
       end;
@@ -311,22 +322,22 @@ begin
   end;
 end;
 
-procedure TProjets.UpdateProject(const aGuid: string; const aDelphi: string);
+procedure TProjets.UpdateProject(const aProjID: string; const aDelphi: string);
 var
   LProj: TProject;
 begin
-  if not aGuid.IsEmpty then
+  if not aProjID.IsEmpty then
   begin
-    LProj.FGuid := aGuid;
-    LProj := GetProject(aGuid);
+    LProj.FProjID := aProjID;
+    LProj := GetProject(aProjID);
 
-    if not LProj.Guid.IsEmpty then
+    if not LProj.ProjID.IsEmpty then
     begin
       LProj.FDelphi := aDelphi;
       LProj.FLastCompile := Now;
 
-      WriteString(aGuid, _Delphi, aDelphi);
-      WriteString(aGuid, _LastCompile, FormatDateTime(_FormatDateTime, Now));
+      WriteString(aProjID, _Delphi, aDelphi);
+      WriteString(aProjID, _LastCompile, FormatDateTime(_FormatDateTime, Now));
       UpdateFile;
     end;
   end;

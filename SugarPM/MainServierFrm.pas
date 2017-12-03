@@ -38,8 +38,11 @@ type
     procedure aProjRunExecute(Sender: TObject);
     procedure ActionManagerUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure vstProjectGetPopupMenu(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; const P: TPoint; var AskParent: Boolean; var PopupMenu: TPopupMenu);
+    // delete project
     procedure aProjDelExecute(Sender: TObject);
+    // Create new or rename group
     procedure aGroupAddExecute(Sender: TObject);
+
     procedure vstProjectExpanded(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vstProjectCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure aGroupDeleteWithProjectExecute(Sender: TObject);
@@ -100,7 +103,7 @@ begin
 
   aGroupAdd.Enabled := aProjRun.Enabled and (LNode.ChildCount = 0) and FStorage[LNode.GetData<string>].GroupName.IsEmpty;
 
-  aGroupRename.Enabled := aProjRun.Enabled and (LNode.ChildCount > 0);
+  aGroupRename.Enabled := aProjRun.Enabled;
 
   aGroupDeleteWithProject.Enabled := aGroupRename.Enabled;
 
@@ -144,6 +147,7 @@ begin
   end;
 end;
 
+// Create new or rename group
 procedure TMainPMFrm.aGroupAddExecute(Sender: TObject);
 var
   LArr: TArray<string>;
@@ -165,11 +169,13 @@ begin
     begin
       if LNode.ChildCount > 0 then
       begin
+        // rename group
         FStorage.GroupRemane(LArr[0], LNode.FirstChild.Index);
         vstProject.ReinitNode(LNode, False);
       end
       else
       begin
+        // add new group
         FStorage.GroupRemane(LArr[0], LNode.Index);
         vstProject.NodeParent[LNode] := vstProject.AddChild(nil);
       end;
@@ -196,6 +202,7 @@ begin
     end;
 end;
 
+// delete project
 procedure TMainPMFrm.aProjDelExecute(Sender: TObject);
 const
   cText = 'Are you sure to delete "%s" from list?';
@@ -313,7 +320,7 @@ begin
         LNode := vstProject.AddChild(LNode);
       end;
 
-      LNode.SetData<string>(LProj.Guid);
+      LNode.SetData<string>(LProj.ProjID);
     end;
   finally
     LGroupList.Free;
@@ -535,23 +542,37 @@ end;
 
 procedure TMainPMFrm.vstProjectDragDrop(Sender: TBaseVirtualTree; Source: TObject; DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode: TDropMode);
 var
-  LSource, LTarget: PVirtualNode;
+  LSource, LTarget, LGroupNode: PVirtualNode;
   LProj: string;
   LIndex: Integer;
+  LEmptyGroup: Boolean;
 begin
   if Assigned(Source) and (Source is TVirtualStringTree) then
   begin
     LSource := (Source as TVirtualStringTree).FocusedNode;
-    LProj := FStorage[LSource.GetData<string>].Guid;
+    LProj := FStorage[LSource.GetData<string>].ProjID;
 
     LTarget := Sender.DropTargetNode;
+
+    LEmptyGroup := Assigned(LSource) and (LSource.Parent.ChildCount = 1);
 
     if Assigned(LTarget) then
     begin
       if LTarget.ChildCount = 0 then
       begin
+        if LEmptyGroup then
+          LGroupNode := LSource.Parent
+        else
+          LGroupNode := nil;
+
         Sender.MoveTo(LSource, LTarget, amInsertAfter, False);
         LIndex := LTarget.Index;
+
+        if LEmptyGroup then
+        begin
+          FStorage.GroupDelete(LSource.GetData<string>);
+          Sender.DeleteNode(LGroupNode);
+        end;
       end
       else
       begin
