@@ -39,6 +39,7 @@ type
       class function IsEditControl(AControl: TComponent): Boolean;
       class function GetTextFromReader(aReader: IOTAEditReader): string;
 
+      class function GetSugarPMHandle: THandle;
 //      class function VK_ScanCodeToAscii(VKey: Word; Code: Word): AnsiChar;
 //      class function ScanCodeToAscii(Code: Word): AnsiChar;
   end;
@@ -48,6 +49,7 @@ implementation
 
 uses
    SHFolder
+   , Registry
 {$IFDEF TestRun}
    , TestRun
 {$ENDIF}
@@ -338,6 +340,19 @@ begin
     rnUpdate: Result := 'UPDATE';
   else
     Result := 'MAINMENU';
+  end;
+end;
+
+class function TUtils.GetSugarPMHandle: THandle;
+begin
+  Result := 0;
+
+  with TRegistry.Create do
+  try
+    if OpenKey('\Software\DelphiPluginSugar\SugarPM', False) then
+      Result := ReadInteger('FormID');
+  finally
+    Free;
   end;
 end;
 

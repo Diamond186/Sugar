@@ -349,6 +349,14 @@ begin
   {$IFDEF DEBUG}
   BorderIcons := [biSystemMenu];
   {$ENDIF}
+
+  with TRegistry.Create do
+  try
+    if OpenKey(cRegKey, True) then
+      WriteInteger('FormID', Handle);
+  finally
+    Free;
+  end;
 end;
 
 procedure TMainPMFrm.FormDestroy(Sender: TObject);
@@ -665,6 +673,12 @@ begin
 
   SetPointer(APtr, ASize);
 end;
+
+initialization
+
+
+finalization
+
 
 end.
 

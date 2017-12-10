@@ -11,11 +11,15 @@ type
   TIdeNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier)
   private
     FProjectPath: WideString;
+    FStream: TMemoryStream;
   protected
     procedure AfterCompile(Succeeded: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
     procedure FileNotification(NotifyCode: TOTAFileNotification;
       const FileName: string; var Cancel: Boolean);
+  public
+    constructor Create;
+    destructor  Destroy; override;
   end;
 
 implementation
@@ -42,7 +46,6 @@ end;
 
 procedure TIdeNotifier.AfterCompile(Succeeded: Boolean);
 var
-  LStream: TMemoryStream;
   LList: TStringList;
   LCopyData: TCopyDataStruct;
   LSugarMPHandle: THandle;
@@ -51,28 +54,32 @@ begin
   TTestRun.AddMarker('begin TIdeNotifier.AfterCompile');
   {$ENDIF}
 
-  if Succeeded and TSetting.GetInstance.UseProjectManager then
+  if Succeeded
+    and Assigned(FStream)
+    and TSetting.GetInstance.UseProjectManager
+  then
   begin
-    LSugarMPHandle := FindWindow('TMainPMFrm', nil);
+    LSugarMPHandle := TUtils.GetSugarPMHandle;
 
     if LSugarMPHandle > 0 then
     begin
-      LStream := TMemoryStream.Create;
+      FStream.Size := 0;
+      FStream.Position := 0;
+
       LList := TStringList.Create;
       try
         LList.Add(TUtils.GetNameDelphi);
         LList.Add(FProjectPath);
 
-        LList.SaveToStream(LStream);
-        
+        LList.SaveToStream(FStream);
+
         LCopyData.dwData := 0;
-        LCopyData.cbData := LStream.Size;
-        LCopyData.lpData := LStream.Memory;
+        LCopyData.cbData := FStream.Size;
+        LCopyData.lpData := FStream.Memory;
 
         SendMessage(LSugarMPHandle, WM_COPYDATA, Application.MainForm.Handle, LParam(@LCopyData));
       finally
         FreeAndNil(LList);
-        FreeAndNil(LStream);
       end;
     end;
   end;
@@ -83,21 +90,32 @@ begin
 end;
 
 procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
-var
-  LSugarMPHandle: THandle;
 begin
   {$IFDEF TestRun}
   TTestRun.AddMarker('begin TIdeNotifier.BeforeCompile');
   {$ENDIF}
 
   FProjectPath := Project.FileName;
-  LSugarMPHandle := FindWindow('TMainPMFrm', nil);
-  if LSugarMPHandle = 0 then
+
+  if TSetting.GetInstance.UseProjectManager
+    and (TUtils.GetSugarPMHandle > 0)
+  then
     ShellExecute(0, 'open', PChar('"' + TUtils.GetHomePath + '\Sugar for Delphi\SugarPM.exe"'), nil, nil, SW_NORMAL);
 
   {$IFDEF TestRun}
   TTestRun.AddMarker('end TIdeNotifier.BeforeCompile');
   {$ENDIF}
+end;
+
+constructor TIdeNotifier.Create;
+begin
+  FStream := TMemoryStream.Create;
+end;
+
+destructor TIdeNotifier.Destroy;
+begin
+  FreeAndNil(FStream);
+  inherited;
 end;
 
 procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;

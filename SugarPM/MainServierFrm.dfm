@@ -111,7 +111,7 @@ object MainPMFrm: TMainPMFrm
           item
             ChangesAllowed = []
             Action = aProjRun
-            Caption = 'ProjRun'
+            Caption = '&ProjRun'
             ImageIndex = 0
             ShowCaption = False
           end
@@ -120,13 +120,13 @@ object MainPMFrm: TMainPMFrm
           end
           item
             Action = aGroupAdd
-            Caption = 'GroupAdd'
+            Caption = '&GroupAdd'
             ImageIndex = 1
             ShowCaption = False
           end
           item
             Action = aGroupRename
-            Caption = 'GroupRename'
+            Caption = 'G&roupRename'
             ImageIndex = 3
             ShowCaption = False
           end
@@ -139,7 +139,7 @@ object MainPMFrm: TMainPMFrm
           end
           item
             Action = aRemoveFromGroup
-            Caption = 'RemoveFromGroup'
+            Caption = 'R&emoveFromGroup'
             ImageIndex = 5
             ShowCaption = False
           end

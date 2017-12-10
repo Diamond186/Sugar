@@ -1,6 +1,7 @@
 program SugarPM;
 
 uses
+  uOneInstanceApp,
   {$IFDEF madExcept}
   madExcept,
   madLinkDisAsm,

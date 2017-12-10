@@ -23,7 +23,7 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=Setup
 OutputBaseFilename=Sugar {#MyAppVersion}
-SetupIconFile=..\GroupProjects\Image\sugar.ico
+SetupIconFile=..\Image\sugar.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -56,9 +56,10 @@ Name: "compTokyo"; Description: "RAD Studio 10.2 Tokyo"; Types: custom;
 [Files]
 Source: "App\ssleay32.dll"; DestDir: "{app}";
 Source: "App\libeay32.dll"; DestDir: "{app}";
-Source: "App\SugarRes.dll"; DestDir: "{app}";
-Source: "App\Common.dll"; DestDir: "{app}";
-Source: "Updater\Update\Update.exe"; DestDir: "{userappdata}\{#MyAppName}";
+Source: "App\SugarRes.dll"; DestDir: "{app}"; flags: ignoreversion
+Source: "App\Common.dll"; DestDir: "{app}"; flags: ignoreversion
+Source: "App\SugarPM.exe"; DestDir: "{userappdata}\{#MyAppName}"; flags: ignoreversion
+Source: "Updater\Update\Update.exe"; DestDir: "{userappdata}\{#MyAppName}"; flags: ignoreversion
 Source: "App\SugarD6.dll"; DestDir: "{app}"; Components: compD6; flags: ignoreversion
 Source: "App\SugarD7.dll"; DestDir: "{app}"; Components: compD7; flags: ignoreversion
 Source: "App\SugarD2005.dll"; DestDir: "{app}"; Components: compD2005; flags: ignoreversion
