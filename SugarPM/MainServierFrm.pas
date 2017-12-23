@@ -382,10 +382,17 @@ begin
         Top := 10;
       end;
     end
-    else if OpenKey(cRegKey, True) then
+    else
+    if OpenKey(cRegKey, True) then
     begin
       Left := ReadInteger('LeftForm');
       Top := ReadInteger('TopForm');
+
+      if Self.Left > Screen.Width - Self.Width then
+        Self.Left := Screen.Width - Self.Width - 5;
+
+      if Self.Top > Screen.Height - Self.Height then
+        Self.Top := Screen.Height - Self.Height - 5;
     end;
 
     if OpenKey(cRegKey, True) then
