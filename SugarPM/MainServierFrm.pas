@@ -45,11 +45,17 @@ type
     procedure vstProjectDragDrop(Sender: TBaseVirtualTree; Source: TObject; DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode: TDropMode);
     procedure vstProjectDragOver(Sender: TBaseVirtualTree; Source: TObject; Shift: TShiftState; State: TDragState; Pt: TPoint; Mode: TDropMode; var Effect: Integer; var Accept: Boolean);
     procedure aRemoveFromGroupExecute(Sender: TObject);
+    procedure vstProjectGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle;
+      var HintText: string);
   private
     const
       cRegKey = '\Software\DelphiPluginSugar\SugarPM';
       cDelphiNameIndex = 0;
       cProjectPathIndex = 1;
+      colProjectName = 0;
+      colLastCompile = 1;
+      colDelphiVersion = 2;
 
     var
       FStorage: TProjets;
@@ -471,42 +477,24 @@ var
   LDelphiPath, LKey: string;
   LRun, LParam: PChar;
 begin
-  if aDelphi = 'D6' then
-    LKey := 'SOFTWARE%s\Borland\Delphi\6.0'
-  else if aDelphi = 'D7' then
-    LKey := 'SOFTWARE%s\Borland\Delphi\7.0'
-  else if aDelphi = 'D2005' then
-    LKey := 'SOFTWARE%s\Borland\BDS\3.0'
-  else if aDelphi = 'D2006' then
-    LKey := 'SOFTWARE%s\Borland\BDS\4.0'
-  else if aDelphi = 'D2007' then
-    LKey := 'SOFTWARE%s\Borland\BDS\5.0'
-  else if aDelphi = 'D2009' then
-    LKey := 'SOFTWARE%s\CodeGear\BDS\6.0'
-  else if aDelphi = 'D2010' then
-    LKey := 'SOFTWARE%s\CodeGear\BDS\7.0'
-  else if aDelphi = 'XE' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\8.0'
-  else if aDelphi = 'XE2' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\9.0'
-  else if aDelphi = 'XE3' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\10.0'
-  else if aDelphi = 'XE4' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\11.0'
-  else if aDelphi = 'XE5' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\12.0'
-  else if aDelphi = 'XE6' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\14.0'
-  else if aDelphi = 'XE7' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\15.0'
-  else if aDelphi = 'XE8' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\16.0'
-  else if aDelphi = 'Seattle' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\17.0'
-  else if aDelphi = 'Berlin' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\18.0'
-  else if aDelphi = 'Tokyo' then
-    LKey := 'SOFTWARE%s\Embarcadero\BDS\19.0';
+  if aDelphi = 'D6'    then LKey := 'SOFTWARE%s\Borland\Delphi\6.0' else
+  if aDelphi = 'D7'    then LKey := 'SOFTWARE%s\Borland\Delphi\7.0' else
+  if aDelphi = 'D2005' then LKey := 'SOFTWARE%s\Borland\BDS\3.0' else
+  if aDelphi = 'D2006' then LKey := 'SOFTWARE%s\Borland\BDS\4.0' else
+  if aDelphi = 'D2007' then LKey := 'SOFTWARE%s\Borland\BDS\5.0' else
+  if aDelphi = 'D2009' then LKey := 'SOFTWARE%s\CodeGear\BDS\6.0' else
+  if aDelphi = 'D2010' then LKey := 'SOFTWARE%s\CodeGear\BDS\7.0' else
+  if aDelphi = 'XE'    then LKey := 'SOFTWARE%s\Embarcadero\BDS\8.0' else
+  if aDelphi = 'XE2'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\9.0' else
+  if aDelphi = 'XE3'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\10.0' else
+  if aDelphi = 'XE4'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\11.0' else
+  if aDelphi = 'XE5'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\12.0' else
+  if aDelphi = 'XE6'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\14.0' else
+  if aDelphi = 'XE7'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\15.0' else
+  if aDelphi = 'XE8'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\16.0' else
+  if aDelphi = 'Seattle' then LKey := 'SOFTWARE%s\Embarcadero\BDS\17.0' else
+  if aDelphi = 'Berlin'  then LKey := 'SOFTWARE%s\Embarcadero\BDS\18.0' else
+  if aDelphi = 'Tokyo'   then LKey := 'SOFTWARE%s\Embarcadero\BDS\19.0';
 
   if TOSVersion.Architecture in [arARM64, arIntelX64] then
     LKey := Format(LKey, ['\WOW6432Node'])
@@ -637,6 +625,19 @@ begin
     FStorage.GroupExpanded(True, Node.FirstChild.Index);
 end;
 
+procedure TMainPMFrm.vstProjectGetHint(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex;
+  var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: string);
+begin
+  if (Column = colProjectName) and Assigned(Node) then
+  begin
+    if Node.ChildCount > 0 then
+      HintText := FStorage[Node.FirstChild.GetData<string>].GroupName
+    else
+      HintText := FStorage[Node.GetData<string>].Path;
+  end;
+end;
+
 procedure TMainPMFrm.vstProjectGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
   LProjID: string;
@@ -644,19 +645,19 @@ begin
   LProjID := Node.GetData<string>;
 
   case Column of
-    0:
+    colProjectName:
       if Node.ChildCount > 0 then
         CellText := FStorage[Node.FirstChild.GetData<string>].GroupName
       else if not LProjID.IsEmpty then
         CellText := FStorage[LProjID].Name;
 
-    1:
+    colLastCompile:
       if Node.ChildCount > 0 then
         CellText := EmptyStr
       else if not LProjID.IsEmpty then
         CellText := DateTimeToStr(FStorage[LProjID].LastCompile);
 
-    2:
+    colDelphiVersion:
       if Node.ChildCount > 0 then
         CellText := EmptyStr
       else if not LProjID.IsEmpty then
@@ -680,12 +681,6 @@ begin
 
   SetPointer(APtr, ASize);
 end;
-
-initialization
-
-
-finalization
-
 
 end.
 

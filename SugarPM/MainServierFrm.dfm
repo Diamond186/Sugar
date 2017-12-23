@@ -66,9 +66,12 @@ object MainPMFrm: TMainPMFrm
     Header.Font.Style = []
     Header.Options = [hoAutoResize, hoDrag, hoShowSortGlyphs, hoVisible]
     Header.SortColumn = 0
+    HintMode = hmHint
     Images = ImageList
     NodeDataSize = 4
+    ParentShowHint = False
     ScrollBarOptions.ScrollBars = ssNone
+    ShowHint = True
     TabOrder = 1
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoChangeScale]
     TreeOptions.MiscOptions = [toAcceptOLEDrop, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toFullRowDrag, toEditOnClick]
@@ -79,6 +82,7 @@ object MainPMFrm: TMainPMFrm
     OnDragDrop = vstProjectDragDrop
     OnExpanded = vstProjectExpanded
     OnGetText = vstProjectGetText
+    OnGetHint = vstProjectGetHint
     OnNodeDblClick = vstProjectNodeDblClick
     Columns = <
       item
