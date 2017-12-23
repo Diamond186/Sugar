@@ -85,14 +85,14 @@ object MainPMFrm: TMainPMFrm
         CaptionAlignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus, coUseCaptionAlignment]
         Position = 0
-        Width = 194
+        Width = 184
         WideText = 'Name'
       end
       item
         Alignment = taCenter
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus]
         Position = 1
-        Width = 130
+        Width = 140
         WideText = 'Last compile'
       end
       item
