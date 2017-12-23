@@ -100,12 +100,12 @@ var
 begin
   LNode := vstProject.FocusedNode;
 
-  aProjRun.Enabled := Assigned(LNode);
-  aProjDel.Enabled := aProjRun.Enabled;
+  aProjRun.Enabled := Assigned(LNode) and not (vsDisabled in LNode.States);
+  aProjDel.Enabled := Assigned(LNode);
 
-  aGroupAdd.Enabled := aProjRun.Enabled and (LNode.ChildCount = 0) and FStorage[LNode.GetData<string>].GroupName.IsEmpty;
+  aGroupAdd.Enabled := Assigned(LNode) and (LNode.ChildCount = 0) and FStorage[LNode.GetData<string>].GroupName.IsEmpty;
 
-  aGroupRename.Enabled := aProjRun.Enabled;
+  aGroupRename.Enabled := Assigned(LNode);
 
   aGroupDeleteWithProject.Enabled := aGroupRename.Enabled;
 
@@ -255,7 +255,9 @@ var
 begin
   LNode := vstProject.FocusedNode;
 
-  if Assigned(LNode) then
+  if Assigned(LNode)
+    and not (vsDisabled in LNode.States)
+  then
     if LNode.ChildCount = 0 then
       RunProject(FStorage[LNode.GetData<string>].Path, FStorage[LNode.GetData<string>].Delphi)
     else
@@ -328,6 +330,9 @@ begin
 
         LNode := vstProject.AddChild(LNode);
       end;
+
+      if not FileExists(LProj.Path) then
+        Include(LNode.States, vsDisabled);
 
       LNode.SetData<string>(LProj.ProjID);
     end;
@@ -628,6 +633,8 @@ end;
 procedure TMainPMFrm.vstProjectGetHint(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex;
   var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: string);
+const
+  cNotFound = 'The project file not found.';
 begin
   if (Column = colProjectName) and Assigned(Node) then
   begin
@@ -635,10 +642,17 @@ begin
       HintText := FStorage[Node.FirstChild.GetData<string>].GroupName
     else
       HintText := FStorage[Node.GetData<string>].Path;
+
+    if vsDisabled in Node.States then
+      HintText := cNotFound + #10#13 + HintText;
   end;
 end;
 
-procedure TMainPMFrm.vstProjectGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+procedure TMainPMFrm.vstProjectGetText(Sender: TBaseVirtualTree;
+                                       Node: PVirtualNode;
+                                       Column: TColumnIndex;
+                                       TextType: TVSTTextType;
+                                       var CellText: string);
 var
   LProjID: string;
 begin
@@ -669,6 +683,9 @@ procedure TMainPMFrm.vstProjectNodeDblClick(Sender: TBaseVirtualTree; const HitI
 begin
   vstProject.FocusedNode := HitInfo.HitNode;
 
+  if Assigned(HitInfo.HitNode)
+    and not (vsDisabled in HitInfo.HitNode.States)
+  then
   with FStorage[HitInfo.HitNode.GetData<string>] do
     RunProject(Path, Delphi);
 end;
