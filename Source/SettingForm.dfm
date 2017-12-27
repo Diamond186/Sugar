@@ -495,6 +495,15 @@ object SettingFrm: TSettingFrm
         Enabled = False
         TabOrder = 5
       end
+      object cbStartupSugarPM: TCheckBox
+        Left = 6
+        Top = 225
+        Width = 195
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Startup with Windows'
+        TabOrder = 6
+      end
     end
   end
 end

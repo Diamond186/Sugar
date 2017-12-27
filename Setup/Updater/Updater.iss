@@ -207,11 +207,7 @@ var
   LParam, LPath: string;
 begin
   if SourceFile = 'SugarPM.zip' then
-  begin
-    LParam := '-o "' + SourceFile + '" -d "' + ExpandConstant('{userappdata}\{#MyAppName}"');
-    LPath := ExpandConstant('"{userappdata}\{#MyAppName}\SugarPM.exe"');
-    RegWriteStringValue(HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Run', 'SugarManagerProject', LPath);
-  end
+    LParam := '-o "' + SourceFile + '" -d "' + ExpandConstant('{userappdata}\{#MyAppName}"')
   else
     LParam := '-o "' + SourceFile + '" -d "' + ExpandConstant('{app}"');
   

@@ -36,7 +36,7 @@ if errorlevel 1 goto failed
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - common.dll
 cd ..\common
 "%DTokyo%\bin\dcc32.exe" --no-config -Q -B -H -W %1 -I"%DTokyo%\release;" -R.\* -U"%DTokyo%\release;" -E..\Setup\App -N..\dcu -NS"%namespace%" common.dpr
@@ -44,7 +44,7 @@ cd ..\common
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - SugarPM.exe
 cd ..\SugarPM
 "%DTokyo%\bin\dcc32.exe" --no-config -Q -B -H -W %1 -I"%DTokyo%\release;%VirtualTree%" -R.\* -U"%DTokyo%\release;%VirtualTree%" -E..\Setup\App -N..\dcu -NS"%namespace%" SugarPM.dpr
@@ -53,7 +53,7 @@ cd ..\SugarPM
 if errorlevel 1 goto failed
 echo Success!
   
-echo .
+echo[
 echo - Delphi Tokyo
 cd ..\dll
 if errorlevel 1 goto failed
@@ -66,7 +66,7 @@ move Sugar.dll SugarTokyo.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi Berlin
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -79,7 +79,7 @@ move Sugar.dll SugarBerlin.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi Seattle
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -92,7 +92,7 @@ move Sugar.dll SugarSeattle.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE8
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -105,7 +105,7 @@ move Sugar.dll SugarXE8.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE7
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -118,7 +118,7 @@ move Sugar.dll SugarXE7.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE6
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -131,7 +131,7 @@ move Sugar.dll SugarXE6.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE5
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -144,7 +144,7 @@ move Sugar.dll SugarXE5.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE4
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -157,7 +157,7 @@ move Sugar.dll SugarXE4.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE3
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -170,7 +170,7 @@ move Sugar.dll SugarXE3.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE2
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -183,7 +183,7 @@ move Sugar.dll SugarXE2.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi XE
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -196,7 +196,7 @@ move Sugar.dll SugarXE.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi D2010
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -209,7 +209,7 @@ move Sugar.dll SugarD2010.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi D2009
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -222,7 +222,7 @@ move Sugar.dll SugarD2009.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi D2007
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -235,7 +235,7 @@ move Sugar.dll SugarD2007.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi D2006
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -248,7 +248,7 @@ move Sugar.dll SugarD2006.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi D2005
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -261,7 +261,7 @@ move Sugar.dll SugarD2005.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi D7
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -274,7 +274,7 @@ move Sugar.dll SugarD7.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - Delphi D6
 cd ..\..\dll
 if errorlevel 1 goto failed
@@ -287,7 +287,7 @@ move Sugar.dll SugarD6.dll
 if errorlevel 1 goto failed
 echo Success!
 
-echo .
+echo[
 echo - build update file
 cd ..\
 if errorlevel 1 goto failed
@@ -296,7 +296,7 @@ if errorlevel 1 goto failed
 rem %innoPath%\Compil32.exe /cc "SugarSetup.iss"
 echo Success!
 
-echo .
+echo[
 echo - build setup file
 if errorlevel 1 goto failed
 %innoPath%\iscc.exe "SugarSetup.iss"
@@ -312,3 +312,5 @@ cd ..
 exit /b 1
 
 :exit
+
+set /p temp="Hit any key to exit"

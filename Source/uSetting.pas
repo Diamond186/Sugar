@@ -19,6 +19,7 @@ type
         FAutoUpdate: Boolean;
         FUseEnglishKeyboard: Boolean;
         FUseProjectManager: Boolean;
+        FStartupProjectManagerWithWindows: Boolean;
 
         FDubleLineHotKey: TShortCut;
         FSelectionShortKey: TShortCut;
@@ -44,6 +45,7 @@ type
         function GetAutoUpdate: Boolean;
         function GetUseEnglishKeyboard: Boolean;
         function GetUseProjectManager: Boolean;
+        function GetStartupProjectManagerWithWindows: Boolean;
 
         procedure SetSelectionEnable(const Value: Boolean);
         procedure SetDubleLineEnable(const Value: Boolean);
@@ -61,7 +63,11 @@ type
         procedure SetAutoUpdate(const Value: Boolean);
         procedure SetUseEnglishKeyboard(const Value: Boolean);
         procedure SetUseProjectManager(const Value: Boolean);
+        procedure SetStartupProjectManagerWithWindows(const Value: Boolean);
     public
+      const
+        cMyAppName = 'Sugar for Delphi';
+
       class function GetInstance: TSetting;
 
       property DuplicateLineEnable: Boolean read GetDubleLineEnable write SetDubleLineEnable;
@@ -81,12 +87,14 @@ type
       property AutoUpdate: Boolean read GetAutoUpdate write SetAutoUpdate;
       property UseEnglishKeyboard: Boolean read GetUseEnglishKeyboard write SetUseEnglishKeyboard;
       property UseProjectManager: Boolean read GetUseProjectManager write SetUseProjectManager;
+      property StartupProjectManagerWithWindows: Boolean read GetStartupProjectManagerWithWindows write SetStartupProjectManagerWithWindows;
   end;
 
 implementation
 
 uses
   Registry
+  , Utils
   , Menus
   {$IFDEF TestRun}
   , TestRun
@@ -219,6 +227,11 @@ begin
   Result := FSelectionShortKey;
 end;
 
+function TSetting.GetStartupProjectManagerWithWindows: Boolean;
+begin
+  Result := FStartupProjectManagerWithWindows;
+end;
+
 function TSetting.GetUseEnglishKeyboard: Boolean;
 begin
   Result := FUseEnglishKeyboard;
@@ -321,6 +334,18 @@ begin
         FUseProjectManager := ReadBool('UseProjectManager')
       else
         FUseProjectManager := False;
+
+      with TRegistry.Create do
+      try
+        RootKey := HKEY_CURRENT_USER;
+
+        if OpenKey('Software\Microsoft\Windows\CurrentVersion\Run', False) then
+          FStartupProjectManagerWithWindows := ValueExists('SugarManagerProject')
+        else
+          FStartupProjectManagerWithWindows := False;
+      finally
+        Free;
+      end;
     end;
   finally
     Free;
@@ -636,6 +661,41 @@ begin
 
   {$IFDEF TestRun}
   TTestRun.AddMarker('end TSetting.SetSelectionShortKey');
+  {$ENDIF}
+end;
+
+procedure TSetting.SetStartupProjectManagerWithWindows(const Value: Boolean);
+var
+  LPath: string;
+begin
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('begin TSetting.SetStartupProjectManagerWithWindows');
+  {$ENDIF}
+
+  if Value <> FStartupProjectManagerWithWindows then
+  begin
+    FStartupProjectManagerWithWindows := Value;
+
+    with TRegistry.Create do
+    try
+      RootKey := HKEY_CURRENT_USER;
+
+      if OpenKey('Software\Microsoft\Windows\CurrentVersion\Run', False) then
+      begin
+        LPath := TUtils.GetHomePath + '\' + cMyAppName + '\SugarPM.exe';
+
+        if FStartupProjectManagerWithWindows then
+          WriteString('SugarManagerProject', '"' + LPath + '"')
+        else
+          DeleteValue('SugarManagerProject');
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('end TSetting.SetStartupProjectManagerWithWindows');
   {$ENDIF}
 end;
 

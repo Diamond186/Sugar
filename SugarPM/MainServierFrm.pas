@@ -543,16 +543,12 @@ var
 begin
   LHeight := (vstProject.RootNodeCount + 2) * vstProject.DefaultNodeHeight + vstProject.RootNodeCount;
 
-  LHeight := LHeight + ActionToolBar.Height + 8;
+  LHeight := LHeight + ActionToolBar.Height + 30;
 
   if LHeight > Height then
   begin
     Height := LHeight;
-    Constraints.MinHeight := Height;
   end;
-
-  if Constraints.MinHeight = 0 then
-    Constraints.MinHeight := Height;
 end;
 
 procedure TMainPMFrm.UpdateLastCompile(const aGuid, aDelphi: string);

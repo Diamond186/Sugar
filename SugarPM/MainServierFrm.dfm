@@ -7,6 +7,7 @@ object MainPMFrm: TMainPMFrm
   ClientWidth = 384
   Color = clBtnFace
   Constraints.MaxWidth = 400
+  Constraints.MinHeight = 170
   Constraints.MinWidth = 400
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

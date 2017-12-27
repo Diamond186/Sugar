@@ -52,6 +52,7 @@ type
     cbIgnoreDefaultFolder: TCheckBox;
     Label17: TLabel;
     Label18: TLabel;
+    cbStartupSugarPM: TCheckBox;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure TreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure cbEnableDubleLineClick(Sender: TObject);
@@ -191,6 +192,7 @@ begin
   TSetting.GetInstance.AllVersionsUpdate := cbAllVersionsUpdate.Checked;
   TSetting.GetInstance.UseEnglishKeyboard := cbEnglishKeyboard.Checked;
   TSetting.GetInstance.UseProjectManager := cbUsePM.Checked;
+  TSetting.GetInstance.StartupProjectManagerWithWindows := cbStartupSugarPM.Checked;
 end;
 
 procedure TSettingFrm.SetPageSetting(aPage: Integer);
@@ -221,6 +223,8 @@ begin
          cbEnglishKeyboard.Checked := TSetting.GetInstance.UseEnglishKeyboard;
          cbUsePM.Checked := TSetting.GetInstance.UseProjectManager;
          Label18.Visible := not FileExists(TUtils.GetHomePath + '\Sugar for Delphi\SugarPM.exe');
+         cbStartupSugarPM.Enabled := not Label18.Visible;
+         cbStartupSugarPM.Checked := TSetting.GetInstance.StartupProjectManagerWithWindows;
        end;
   end;
 end;
