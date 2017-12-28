@@ -12,6 +12,8 @@ type
   private
     FProjectPath: WideString;
     FStream: TMemoryStream;
+
+    function ProjectNameLikeProject1(const aProjectName: WideString): Boolean;
   protected
     procedure AfterCompile(Succeeded: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
@@ -27,6 +29,7 @@ implementation
 uses
    uSetting
    , ShellAPI
+   , StrUtils
    , Utils
    , Forms
   {$IFDEF TestRun}
@@ -54,9 +57,14 @@ begin
   TTestRun.AddMarker('begin TIdeNotifier.AfterCompile');
   {$ENDIF}
 
+  if TSetting.GetInstance.UseIgnoreProjectNameLikeProject1
+    and ProjectNameLikeProject1(ReplaceStr(ExtractFileName(FProjectPath),
+                                           ExtractFileExt(FProjectPath), EmptyStr))
+  then
+    Exit;
+
   if Succeeded
     and Assigned(FStream)
-    and TSetting.GetInstance.UseProjectManager
   then
   begin
     LSugarMPHandle := TUtils.GetSugarPMHandle;
@@ -123,6 +131,25 @@ procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;
 begin
 //  MsgServices.AddTitleMessage(Format('%s: %s',
 //    [GetEnumName(TypeInfo(TOTAFIleNotification), Ord(NotifyCode)), FileName]));
+end;
+
+function TIdeNotifier.ProjectNameLikeProject1(const aProjectName: WideString): Boolean;
+var
+  LInt: Integer;
+begin
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('begin TIdeNotifier.ProjectNameLikeProject1');
+  TTestRun.AddMarker('aProjectName = ' + aProjectName);
+  TTestRun.AddMarker('LeftStr = ' + LeftStr(aProjectName, 7));
+  TTestRun.AddMarker('Copy = ' + Copy(aProjectName, 8, Length(aProjectName) - 7));
+  {$ENDIF}
+
+  Result := (LeftStr(aProjectName, 7) = 'Project')
+         and TryStrToInt(Copy(aProjectName, 8, Length(aProjectName) - 7), LInt);
+
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('end TIdeNotifier.ProjectNameLikeProject1');
+  {$ENDIF}
 end;
 
 end.

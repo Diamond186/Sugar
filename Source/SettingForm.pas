@@ -193,6 +193,7 @@ begin
   TSetting.GetInstance.UseEnglishKeyboard := cbEnglishKeyboard.Checked;
   TSetting.GetInstance.UseProjectManager := cbUsePM.Checked;
   TSetting.GetInstance.StartupProjectManagerWithWindows := cbStartupSugarPM.Checked;
+  TSetting.GetInstance.UseIgnoreProjectNameLikeProject1 := cbIgnoreProject1.Checked;
 end;
 
 procedure TSettingFrm.SetPageSetting(aPage: Integer);
@@ -225,6 +226,7 @@ begin
          Label18.Visible := not FileExists(TUtils.GetHomePath + '\Sugar for Delphi\SugarPM.exe');
          cbStartupSugarPM.Enabled := not Label18.Visible;
          cbStartupSugarPM.Checked := TSetting.GetInstance.StartupProjectManagerWithWindows;
+         cbIgnoreProject1.Checked := TSetting.GetInstance.UseIgnoreProjectNameLikeProject1;
        end;
   end;
 end;

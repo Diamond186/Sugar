@@ -20,6 +20,7 @@ type
         FUseEnglishKeyboard: Boolean;
         FUseProjectManager: Boolean;
         FStartupProjectManagerWithWindows: Boolean;
+        FUseIgnoreProjectNameLikeProject1: Boolean;
 
         FDubleLineHotKey: TShortCut;
         FSelectionShortKey: TShortCut;
@@ -46,6 +47,7 @@ type
         function GetUseEnglishKeyboard: Boolean;
         function GetUseProjectManager: Boolean;
         function GetStartupProjectManagerWithWindows: Boolean;
+        function GetUseIgnoreProjectNameLikeProject1: Boolean;
 
         procedure SetSelectionEnable(const Value: Boolean);
         procedure SetDubleLineEnable(const Value: Boolean);
@@ -64,10 +66,8 @@ type
         procedure SetUseEnglishKeyboard(const Value: Boolean);
         procedure SetUseProjectManager(const Value: Boolean);
         procedure SetStartupProjectManagerWithWindows(const Value: Boolean);
+        procedure SetUseIgnoreProjectNameLikeProject1(const Value: Boolean);
     public
-      const
-        cMyAppName = 'Sugar for Delphi';
-
       class function GetInstance: TSetting;
 
       property DuplicateLineEnable: Boolean read GetDubleLineEnable write SetDubleLineEnable;
@@ -88,6 +88,7 @@ type
       property UseEnglishKeyboard: Boolean read GetUseEnglishKeyboard write SetUseEnglishKeyboard;
       property UseProjectManager: Boolean read GetUseProjectManager write SetUseProjectManager;
       property StartupProjectManagerWithWindows: Boolean read GetStartupProjectManagerWithWindows write SetStartupProjectManagerWithWindows;
+      property UseIgnoreProjectNameLikeProject1: Boolean read GetUseIgnoreProjectNameLikeProject1 write SetUseIgnoreProjectNameLikeProject1;
   end;
 
 implementation
@@ -100,6 +101,9 @@ uses
   , TestRun
   {$ENDIF}
   ;
+
+const
+  cMyAppName = 'Sugar for Delphi';
 
 var
   INSTANCE: TSetting;
@@ -237,6 +241,11 @@ begin
   Result := FUseEnglishKeyboard;
 end;
 
+function TSetting.GetUseIgnoreProjectNameLikeProject1: Boolean;
+begin
+  Result := FUseIgnoreProjectNameLikeProject1;
+end;
+
 function TSetting.GetUseOSClipboard: Boolean;
 begin
   Result := FUseOSClipboard;
@@ -346,6 +355,11 @@ begin
       finally
         Free;
       end;
+
+      if ValueExists('UseIgnoreProjectNameLikeProject1') then
+        FUseProjectManager := ReadBool('UseIgnoreProjectNameLikeProject1')
+      else
+        FUseProjectManager := False;
     end;
   finally
     Free;
@@ -724,6 +738,34 @@ begin
 
   {$IFDEF TestRun}
   TTestRun.AddMarker('end TSetting.SetUseEnglishKeyboard');
+  {$ENDIF}
+end;
+
+procedure TSetting.SetUseIgnoreProjectNameLikeProject1(const Value: Boolean);
+begin
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('begin TSetting.SetUseIgnoreProjectNameLikeProject1');
+  {$ENDIF}
+
+  if Value <> FUseIgnoreProjectNameLikeProject1 then
+  begin
+    FUseIgnoreProjectNameLikeProject1 := Value;
+
+    with TRegistry.Create do
+    try
+      RootKey := HKEY_CURRENT_USER;
+
+      if OpenKey(cSettingKey, True) then
+      begin
+        WriteBool('UseIgnoreProjectNameLikeProject1', FUseIgnoreProjectNameLikeProject1);
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('end TSetting.SetUseIgnoreProjectNameLikeProject1');
   {$ENDIF}
 end;
 

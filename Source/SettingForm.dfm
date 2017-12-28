@@ -85,6 +85,8 @@ object SettingFrm: TSettingFrm
       Left = 0
       Top = 0
       Caption = 'DublLine'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         381
         341)
@@ -147,6 +149,8 @@ object SettingFrm: TSettingFrm
       Left = 0
       Top = 0
       Caption = 'Selection'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         381
         341)
@@ -223,6 +227,8 @@ object SettingFrm: TSettingFrm
       Left = 0
       Top = 0
       Caption = 'Clipboard'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         381
         341)
