@@ -1,6 +1,6 @@
 object SettingFrm: TSettingFrm
-  Left = 280
-  Top = 97
+  Left = 397
+  Top = 112
   BorderStyle = bsDialog
   Caption = 'Setting'
   ClientHeight = 381
@@ -85,8 +85,6 @@ object SettingFrm: TSettingFrm
       Left = 0
       Top = 0
       Caption = 'DublLine'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         381
         341)
@@ -141,6 +139,7 @@ object SettingFrm: TSettingFrm
         Width = 121
         Height = 19
         HotKey = 16452
+        InvalidKeys = [hcNone, hcShift]
         Modifiers = [hkCtrl]
         TabOrder = 1
       end
@@ -149,8 +148,6 @@ object SettingFrm: TSettingFrm
       Left = 0
       Top = 0
       Caption = 'Selection'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         381
         341)
@@ -210,6 +207,7 @@ object SettingFrm: TSettingFrm
         Width = 121
         Height = 19
         HotKey = 16471
+        InvalidKeys = [hcNone, hcShift]
         Modifiers = [hkCtrl]
         TabOrder = 1
       end
@@ -219,6 +217,7 @@ object SettingFrm: TSettingFrm
         Width = 121
         Height = 19
         HotKey = 24663
+        InvalidKeys = [hcNone, hcShift]
         Modifiers = [hkShift, hkCtrl]
         TabOrder = 2
       end
@@ -227,8 +226,6 @@ object SettingFrm: TSettingFrm
       Left = 0
       Top = 0
       Caption = 'Clipboard'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         381
         341)
@@ -300,6 +297,8 @@ object SettingFrm: TSettingFrm
         Width = 121
         Height = 19
         HotKey = 32854
+        InvalidKeys = [hcNone, hcShift]
+        Modifiers = [hkAlt]
         TabOrder = 1
       end
       object hkClipboardCopyItem: THotKey
@@ -308,6 +307,7 @@ object SettingFrm: TSettingFrm
         Width = 121
         Height = 19
         HotKey = 16397
+        InvalidKeys = [hcNone, hcShift]
         Modifiers = [hkCtrl]
         TabOrder = 2
       end
@@ -346,6 +346,7 @@ object SettingFrm: TSettingFrm
         Top = 11
         Width = 330
         Height = 1
+        Cursor = crHSplit
         Align = alNone
         Color = clBtnShadow
         ParentColor = False
@@ -370,6 +371,7 @@ object SettingFrm: TSettingFrm
         Top = 87
         Width = 317
         Height = 1
+        Cursor = crHSplit
         Align = alNone
         Color = clBtnShadow
         ParentColor = False
@@ -394,6 +396,7 @@ object SettingFrm: TSettingFrm
         Top = 146
         Width = 287
         Height = 1
+        Cursor = crHSplit
         Align = alNone
         Color = clBtnShadow
         ParentColor = False

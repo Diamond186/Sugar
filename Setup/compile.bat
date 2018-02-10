@@ -57,6 +57,7 @@ echo[
 echo - Delphi Tokyo
 cd ..\dll
 if errorlevel 1 goto failed
+"%DTokyo%\bin\brcc32.exe" -fo.\version.res .\version.rc
 "%DTokyo%\bin\dcc32.exe" --no-config -Q -B -H -W %1 -I"%DTokyo%\release;%Path%" -U"%DTokyo%\release;%Path%" -E..\Setup\App -N..\dcu -LU"designide;" -NS"%namespace%" Sugar.dpr
 if errorlevel 1 goto failed
 cd ..\Setup\App

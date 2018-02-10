@@ -239,8 +239,10 @@ end;
 
 class function TUtils.GetDefaultProjectPath: string;
 {$IFNDEF XE2}
-var
-  LDocumentPath: string;
+  {$IFDEF D2005}
+    var
+      LDocumentPath: string;
+  {$ENDIF}
 {$ENDIF}
 begin
   {$IFDEF XE2}
@@ -251,7 +253,7 @@ begin
   if Result = EmptyStr then
   begin
     {$IFNDEF D2005}
-      Result := StringReplace(ExtractFilePath(ParamStr(0), '\bin\', 'Projects', [rfReplaceAll, rfIgnoreCase]);
+      Result := StringReplace(ExtractFilePath(ParamStr(0)), '\bin\', 'Projects', [rfReplaceAll, rfIgnoreCase]);
     {$ELSE}
       LDocumentPath := GetDocumentPath;
 
@@ -392,7 +394,7 @@ begin
   with TRegistry.Create do
   try
     if OpenKey('\Software\DelphiPluginSugar\SugarPM', False) then
-      Result := ReadInteger('FormID');
+      Result := {$IFDEF Tokyo}StrToUInt{$ELSE}StrToInt{$ENDIF}(ReadString('FormID'));
   finally
     Free;
   end;

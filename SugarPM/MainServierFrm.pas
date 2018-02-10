@@ -364,7 +364,7 @@ begin
   with TRegistry.Create do
   try
     if OpenKey(cRegKey, True) then
-      WriteInteger('FormID', Handle);
+      WriteString('FormID', UIntToStr(Handle));
   finally
     Free;
   end;
