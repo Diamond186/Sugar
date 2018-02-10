@@ -21,6 +21,7 @@ type
         FUseProjectManager: Boolean;
         FStartupProjectManagerWithWindows: Boolean;
         FUseIgnoreProjectNameLikeProject1: Boolean;
+        FUseIgnoreDefaultProjectPath: Boolean;
 
         FDubleLineHotKey: TShortCut;
         FSelectionShortKey: TShortCut;
@@ -48,6 +49,7 @@ type
         function GetUseProjectManager: Boolean;
         function GetStartupProjectManagerWithWindows: Boolean;
         function GetUseIgnoreProjectNameLikeProject1: Boolean;
+        function GetUseIgnoreDefaultProjectPath: Boolean;
 
         procedure SetSelectionEnable(const Value: Boolean);
         procedure SetDubleLineEnable(const Value: Boolean);
@@ -67,6 +69,7 @@ type
         procedure SetUseProjectManager(const Value: Boolean);
         procedure SetStartupProjectManagerWithWindows(const Value: Boolean);
         procedure SetUseIgnoreProjectNameLikeProject1(const Value: Boolean);
+        procedure SetUseIgnoreDefaultProjectPath(const Value: Boolean);
     public
       class function GetInstance: TSetting;
 
@@ -89,6 +92,7 @@ type
       property UseProjectManager: Boolean read GetUseProjectManager write SetUseProjectManager;
       property StartupProjectManagerWithWindows: Boolean read GetStartupProjectManagerWithWindows write SetStartupProjectManagerWithWindows;
       property UseIgnoreProjectNameLikeProject1: Boolean read GetUseIgnoreProjectNameLikeProject1 write SetUseIgnoreProjectNameLikeProject1;
+      property UseIgnoreDefaultProjectPath: Boolean read GetUseIgnoreDefaultProjectPath write SetUseIgnoreDefaultProjectPath;
   end;
 
 implementation
@@ -241,6 +245,11 @@ begin
   Result := FUseEnglishKeyboard;
 end;
 
+function TSetting.GetUseIgnoreDefaultProjectPath: Boolean;
+begin
+  Result := FUseIgnoreDefaultProjectPath;
+end;
+
 function TSetting.GetUseIgnoreProjectNameLikeProject1: Boolean;
 begin
   Result := FUseIgnoreProjectNameLikeProject1;
@@ -357,9 +366,14 @@ begin
       end;
 
       if ValueExists('UseIgnoreProjectNameLikeProject1') then
-        FUseProjectManager := ReadBool('UseIgnoreProjectNameLikeProject1')
+        FUseIgnoreProjectNameLikeProject1 := ReadBool('UseIgnoreProjectNameLikeProject1')
       else
-        FUseProjectManager := False;
+        FUseIgnoreProjectNameLikeProject1 := False;
+
+      if ValueExists('UseIgnoreDefaultProjectPath') then
+        FUseIgnoreDefaultProjectPath := ReadBool('UseIgnoreDefaultProjectPath')
+      else
+        FUseIgnoreDefaultProjectPath := False;
     end;
   finally
     Free;
@@ -738,6 +752,34 @@ begin
 
   {$IFDEF TestRun}
   TTestRun.AddMarker('end TSetting.SetUseEnglishKeyboard');
+  {$ENDIF}
+end;
+
+procedure TSetting.SetUseIgnoreDefaultProjectPath(const Value: Boolean);
+begin
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('begin TSetting.SetUseIgnoreDefaultProjectPath');
+  {$ENDIF}
+
+  if Value <> FUseIgnoreDefaultProjectPath then
+  begin
+    FUseIgnoreDefaultProjectPath := Value;
+
+    with TRegistry.Create do
+    try
+      RootKey := HKEY_CURRENT_USER;
+
+      if OpenKey(cSettingKey, True) then
+      begin
+        WriteBool('UseIgnoreDefaultProjectPath', FUseIgnoreDefaultProjectPath);
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+  {$IFDEF TestRun}
+  TTestRun.AddMarker('end TSetting.SetUseIgnoreDefaultProjectPath');
   {$ENDIF}
 end;
 

@@ -30,6 +30,7 @@ type
       class function GetCurrentVersion: string;
       class function GetNameDelphi: String;
       class function GetHomePath: string;
+      class function GetDocumentPath: string;
 
       class function OtaGetCurrentEditWindow: TCustomForm;
       class function OtaGetTopMostEditView: IOTAEditView;
@@ -40,6 +41,8 @@ type
       class function GetTextFromReader(aReader: IOTAEditReader): string;
 
       class function GetSugarPMHandle: THandle;
+      class function GetDefaultProjectPath: string;
+
 //      class function VK_ScanCodeToAscii(VKey: Word; Code: Word): AnsiChar;
 //      class function ScanCodeToAscii(Code: Word): AnsiChar;
   end;
@@ -50,6 +53,7 @@ implementation
 uses
    SHFolder
    , Registry
+   , Variants
 {$IFDEF TestRun}
    , TestRun
 {$ENDIF}
@@ -231,6 +235,44 @@ begin
     // format result string
     Result := Format('%d.%d.%d.%d', [iVer[1], iVer[2], iVer[3], iVer[4]]);
   end;
+end;
+
+class function TUtils.GetDefaultProjectPath: string;
+{$IFNDEF XE2}
+var
+  LDocumentPath: string;
+{$ENDIF}
+begin
+  {$IFDEF XE2}
+  Result := (BorlandIDEServices As IOTAServices).GetStartupDirectory;
+  {$ELSE}
+  Result := (BorlandIDEServices As IOTAServices).GetEnvironmentOptions.Values['DefaultProjectsDirectory'];
+
+  if Result = EmptyStr then
+  begin
+    {$IFNDEF D2005}
+      Result := StringReplace(ExtractFilePath(ParamStr(0), '\bin\', 'Projects', [rfReplaceAll, rfIgnoreCase]);
+    {$ELSE}
+      LDocumentPath := GetDocumentPath;
+
+      {$IFDEF D2006}
+        Result := LDocumentPath + '\RAD Studio\Projects\';
+      {$ELSE}
+        Result := LDocumentPath + '\Borland Studio Projects\';
+      {$ENDIF}
+    {$ENDIF}
+  end;
+  {$ENDIF}
+end;
+
+class function TUtils.GetDocumentPath: string;
+var
+  LStr: array[0 .. MAX_PATH] of Char;
+begin
+  SetLastError(ERROR_SUCCESS);
+
+  if SHGetFolderPath(0, CSIDL_PERSONAL, 0, 0, @LStr) = S_OK then
+    Result := LStr;
 end;
 
 class function TUtils.GetHomePath: string;

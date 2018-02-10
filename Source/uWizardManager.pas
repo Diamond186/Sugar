@@ -100,11 +100,11 @@ const
   csIdleMinInterval = 50;
 
 const
-  {$IFDEF XE}
+  {$IFDEF D2010}
   strSplashScreenName = 'Sugar for Embarcadero RAD Studio';
   {$ENDIF}
 
-  {$IFNDEF XE}
+  {$IFNDEF D2010}
     {$IFDEF D2007}
     strSplashScreenName = 'Sugar for CodeGear Delphi';
     {$ENDIF}

@@ -13,7 +13,7 @@ object AboutFrm: TAboutFrm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
-  Position = poMainFormCenter
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
@@ -103,6 +103,8 @@ object AboutFrm: TAboutFrm
     Top = 89
     Width = 49
     Height = 49
+    TabOrder = 0
+    OnClick = bEmailClick
     Glyph.Data = {
       36240000424D3624000000000000360000002800000030000000300000000100
       2000000000000024000000000000000000000000000000000000000000000000
@@ -394,7 +396,5 @@ object AboutFrm: TAboutFrm
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000}
-    TabOrder = 0
-    OnClick = bEmailClick
   end
 end

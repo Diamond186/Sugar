@@ -57,9 +57,11 @@ begin
   TTestRun.AddMarker('begin TIdeNotifier.AfterCompile');
   {$ENDIF}
 
-  if TSetting.GetInstance.UseIgnoreProjectNameLikeProject1
-    and ProjectNameLikeProject1(ReplaceStr(ExtractFileName(FProjectPath),
-                                           ExtractFileExt(FProjectPath), EmptyStr))
+  if (TSetting.GetInstance.UseIgnoreProjectNameLikeProject1
+    and ProjectNameLikeProject1(StringReplace(ExtractFileName(FProjectPath),
+                                              ExtractFileExt(FProjectPath), EmptyStr, [rfReplaceAll])))
+    or (TSetting.GetInstance.UseIgnoreDefaultProjectPath
+    and (TUtils.GetDefaultProjectPath = ExtractFilePath(FProjectPath)))
   then
     Exit;
 

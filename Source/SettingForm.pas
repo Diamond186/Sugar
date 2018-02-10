@@ -49,7 +49,7 @@ type
     Label16: TLabel;
     cbUsePM: TCheckBox;
     cbIgnoreProject1: TCheckBox;
-    cbIgnoreDefaultFolder: TCheckBox;
+    cbIgnoreDefaultPath: TCheckBox;
     Label17: TLabel;
     Label18: TLabel;
     cbStartupSugarPM: TCheckBox;
@@ -107,7 +107,7 @@ end;
 procedure TSettingFrm.cbUsePMClick(Sender: TObject);
 begin
   cbIgnoreProject1.Enabled := cbUsePM.Checked;
-  cbIgnoreDefaultFolder.Enabled := cbUsePM.Checked;
+  cbIgnoreDefaultPath.Enabled := cbUsePM.Checked;
 end;
 
 procedure TSettingFrm.EnabledClipboard(aValue: Boolean);
@@ -194,6 +194,7 @@ begin
   TSetting.GetInstance.UseProjectManager := cbUsePM.Checked;
   TSetting.GetInstance.StartupProjectManagerWithWindows := cbStartupSugarPM.Checked;
   TSetting.GetInstance.UseIgnoreProjectNameLikeProject1 := cbIgnoreProject1.Checked;
+  TSetting.GetInstance.UseIgnoreDefaultProjectPath := cbIgnoreDefaultPath.Checked;
 end;
 
 procedure TSettingFrm.SetPageSetting(aPage: Integer);
@@ -227,6 +228,7 @@ begin
          cbStartupSugarPM.Enabled := not Label18.Visible;
          cbStartupSugarPM.Checked := TSetting.GetInstance.StartupProjectManagerWithWindows;
          cbIgnoreProject1.Checked := TSetting.GetInstance.UseIgnoreProjectNameLikeProject1;
+         cbIgnoreDefaultPath.Checked := TSetting.GetInstance.UseIgnoreDefaultProjectPath;
        end;
   end;
 end;

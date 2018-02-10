@@ -1,6 +1,6 @@
 object SettingFrm: TSettingFrm
-  Left = 261
-  Top = 96
+  Left = 280
+  Top = 97
   BorderStyle = bsDialog
   Caption = 'Setting'
   ClientHeight = 381
@@ -13,7 +13,7 @@ object SettingFrm: TSettingFrm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
-  Position = poMainFormCenter
+  Position = poScreenCenter
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   PixelsPerInch = 96
@@ -491,7 +491,7 @@ object SettingFrm: TSettingFrm
         Enabled = False
         TabOrder = 4
       end
-      object cbIgnoreDefaultFolder: TCheckBox
+      object cbIgnoreDefaultPath: TCheckBox
         Left = 6
         Top = 202
         Width = 195
