@@ -11,7 +11,7 @@ library Sugar;
   using PChar or ShortString parameters.}
 
 {$R *.res}
-{$R version.res}
+{.$R version.res}
 {$I ..\Source\Compiler.inc}
 
 uses
