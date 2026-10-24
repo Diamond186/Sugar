@@ -40,6 +40,14 @@ begin
   aError := EmptyStr;
   Result := True;
 
+  // SMTP credentials come from the environment, never from source code
+  if (GetEnvironmentVariable('SUGAR_SMTP_USER') = EmptyStr) or
+     (GetEnvironmentVariable('SUGAR_SMTP_PASSWORD') = EmptyStr) then
+  begin
+    aError := 'Email is not configured: set SUGAR_SMTP_USER and SUGAR_SMTP_PASSWORD';
+    Exit(False);
+  end;
+
   LIdSMTP := TIdSMTP.Create(nil);
   LIdSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(LIdSMTP);
 
@@ -56,10 +64,10 @@ begin
   begin
     IOHandler := LIdSSLIOHandlerSocketOpenSSL;
     Host := 'smtp.gmail.com';
-    Password := 'pgcxmowyglygxmjf';
+    Password := GetEnvironmentVariable('SUGAR_SMTP_PASSWORD');
     UseTLS := utUseImplicitTLS;
     Port := 465;
-    Username := 'diamondmovchan@gmail.com';
+    Username := GetEnvironmentVariable('SUGAR_SMTP_USER');
   end;
 
   LIdMessage := TIdMessage.Create(LIdSMTP);

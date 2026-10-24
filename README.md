@@ -1,4 +1,4 @@
-# Sugar [![](https://img.shields.io/badge/version-1.0.1.2-brightgreen.svg)](http://sugarupdate.s3.amazonaws.com/Sugar%201.0.1.2.zip) [![](https://img.shields.io/badge/test%20version-1.0.2.0-brightgreen.svg)](https://github.com/Diamond186/Sugar/blob/master/releases/1.0.2.0/1.0.2.0.exe) ![](https://img.shields.io/badge/license-Apache%20v2.0-brightgreen.svg)
+# Sugar [![](https://img.shields.io/badge/test%20version-1.0.2.0-brightgreen.svg)](https://github.com/Diamond186/Sugar/blob/master/releases/1.0.2.0/1.0.2.0.exe) ![](https://img.shields.io/badge/license-Apache%20v2.0-brightgreen.svg)
 
 Designed to simplify and speed up writing code your application.
 Supported from Delphi 7 to RAD Studio Tokyo.
@@ -6,7 +6,7 @@ Supported from Delphi 7 to RAD Studio Tokyo.
 ## Capabilities
 
 <details>
-  <summary>Dublication line(s)</summary>
+  <summary>Duplicate line(s)</summary>
   <p><img src="/gif/DUPLICATE.gif"></p>
 </details>
 
@@ -22,7 +22,7 @@ Supported from Delphi 7 to RAD Studio Tokyo.
 
 ## Installing
 
-Download [![](https://img.shields.io/badge/version-1.0.1.2-brightgreen.svg)](http://sugarupdate.s3.amazonaws.com/Sugar%201.0.1.2.zip) or [![](https://img.shields.io/badge/test%20version-1.0.2.0-brightgreen.svg)](https://github.com/Diamond186/Sugar/blob/master/releases/1.0.2.0/1.0.2.0.exe)
+Download [![](https://img.shields.io/badge/test%20version-1.0.2.0-brightgreen.svg)](https://github.com/Diamond186/Sugar/blob/master/releases/1.0.2.0/1.0.2.0.exe)
 
 ## Authors
 
